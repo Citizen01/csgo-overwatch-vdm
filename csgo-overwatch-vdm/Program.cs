@@ -61,7 +61,6 @@ namespace csgo_overwatch_vdm
                 return;
             }
 
-
             if (string.IsNullOrEmpty(_steamid))
             {
                 Console.WriteLine("[ERROR] steamid parameter is empty !\n");
@@ -131,12 +130,19 @@ namespace csgo_overwatch_vdm
                         var tick = ((DemoParser) sender).CurrentTick;
                         _round++;
                         Console.WriteLine("[{0}] The round #{1} has started.", tick, _round);
+
+                        VdmGenerator.Add(new PlayCommandsAction
+                        {
+                            StartTick = tick,
+                            Commands = "spec_player_by_accountid " + _steamid
+                        });
                     };
 
                     parser.FreezetimeEnded += (sender, e) =>
                     {
                         var tick = ((DemoParser) sender).CurrentTick;
-                        Console.WriteLine("[{0}] Freeztime ended", tick, _round);
+                        Console.WriteLine("[{0}] Freeztime ended", tick);
+
                         VdmGenerator.Add(new PlayCommandsAction
                         {
                             StartTick = tick,
