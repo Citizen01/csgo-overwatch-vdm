@@ -1,6 +1,6 @@
 ﻿namespace csgo_overwatch_vdm.vdm
 {
-    class PlayCommandsAction : DemoActionBase
+    internal class PlayCommandsAction : DemoActionBase
     {
         public string Commands { get; set; }
 
@@ -10,13 +10,13 @@
         }
 
         private static string _template = @"
-    {0}
-    {
+    ""{0}""
+    {{
         factory ""{1}""
         name ""{2}""
         starttick ""{3}""
         commands ""{4}""
-    }";
+    }}";
 
         public override string ToString(int index)
         {

@@ -1,6 +1,6 @@
 ﻿namespace csgo_overwatch_vdm.vdm
 {
-    class StopPlaybackAction : DemoActionBase
+    internal class StopPlaybackAction : DemoActionBase
     {
         public StopPlaybackAction()
         {
@@ -8,7 +8,7 @@
         }
 
         private static string _template = @"
-    {0}
+    ""{0}""
     {{
         factory ""{1}""
         name ""{2}""

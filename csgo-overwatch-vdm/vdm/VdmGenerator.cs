@@ -6,7 +6,7 @@ namespace csgo_overwatch_vdm.vdm
 {
     public static class VdmGenerator
     {
-        public static List<DemoActionBase> _demoactions = new List<DemoActionBase>();
+        private static readonly List<DemoActionBase> _demoactions = new List<DemoActionBase>();
 
         public static void Add(DemoActionBase demoaction)
         {
@@ -23,11 +23,12 @@ namespace csgo_overwatch_vdm.vdm
 
             using (var file = new StreamWriter(path))
             {
+                file.Write("demoactions\n{"); // Header
                 for (var i = 0; i < _demoactions.Count; i++)
                 {
-                    var action = _demoactions[i];
-                    file.Write(action.ToString(i));
+                    file.Write(_demoactions[i].ToString(i)); // Content
                 }
+                file.Write("\n}"); // Footer
             }
         }
     }

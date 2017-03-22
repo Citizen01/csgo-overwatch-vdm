@@ -5,13 +5,16 @@ using DemoInfo;
 
 namespace csgo_overwatch_vdm
 {
-    class Program
+    internal class Program
     {
-        static bool _listxuids;
-        static string _xuid;
-        static int _round;
+        private static bool _listxuids;
+        private static string _xuid;
+        private static int _round;
 
-        static void Main(string[] args)
+        private const int DEMO_SPEED_NORMAL = 1;
+        private const int DEMO_SPEED_FASTFORWARD = 4;
+
+        private static void Main(string[] args)
         {
             Console.SetOut(Console.Out);
             if (args.Length < 1)
@@ -85,7 +88,7 @@ namespace csgo_overwatch_vdm
                             VdmGenerator.Add(new PlayCommandsAction
                             {
                                 StartTick = tick,
-                                Commands = "demo_timescale 1"
+                                Commands = "demo_timescale " + DEMO_SPEED_NORMAL
                             });
                         }
                     };
@@ -109,7 +112,7 @@ namespace csgo_overwatch_vdm
                             VdmGenerator.Add(new PlayCommandsAction
                             {
                                 StartTick = tick,
-                                Commands = "demo_timescale 4"
+                                Commands = "demo_timescale " + DEMO_SPEED_FASTFORWARD
                             });
                         }
                     };
@@ -128,7 +131,7 @@ namespace csgo_overwatch_vdm
                         VdmGenerator.Add(new PlayCommandsAction
                         {
                             StartTick = tick,
-                            Commands = "demo_timescale 1"
+                            Commands = "demo_timescale " + DEMO_SPEED_NORMAL
                         });
                     };
 
@@ -139,13 +142,16 @@ namespace csgo_overwatch_vdm
                         VdmGenerator.Add(new PlayCommandsAction
                         {
                             StartTick = tick,
-                            Commands = "demo_timescale 4"
+                            Commands = "demo_timescale " + DEMO_SPEED_FASTFORWARD
                         });
                     };
 
                     parser.ParseToEnd();
                 }
             }
+
+            var vdmFile = fileName.Replace(".dem", ".vdm");
+            VdmGenerator.Generate(vdmFile);
 
             Console.ReadKey(); // TODO: remove
         }
