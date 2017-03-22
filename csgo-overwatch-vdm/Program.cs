@@ -69,7 +69,15 @@ namespace csgo_overwatch_vdm
                 Console.ReadKey(); // TODO: remove
                 return;
             }
-            
+
+            if (!Regex.IsMatch(_steamid, @"^\d{17}$"))
+            {
+                Console.WriteLine("[ERROR] The SteamId provided is invalid (should be a number of 17 digits) !\n");
+                PrintHelp();
+                Console.ReadKey(); // TODO: remove
+                return;
+            }
+
             using (var fileStream = File.OpenRead(fileName))
             {
                 Console.WriteLine("Parsing demo {0}", fileName);
