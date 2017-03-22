@@ -193,7 +193,7 @@ namespace csgo_overwatch_vdm
             Console.WriteLine("USAGE: csgo-overwatch-vdm filename.dem");
             Console.WriteLine("optional arguments:");
             Console.WriteLine(" -steamid <steamid>   SteamId of the player to generate the vdm for.");
-            Console.WriteLine(" -liststeamids        list the xuid of the players in the match.");
+            Console.WriteLine(" -liststeamids        List the SteamId of the players in the match.");
         }
     }
 }
