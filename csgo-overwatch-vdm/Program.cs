@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using csgo_overwatch_vdm.vdm;
 using DemoInfo;
 
@@ -7,8 +8,8 @@ namespace csgo_overwatch_vdm
 {
     internal class Program
     {
-        private static bool _listxuids;
-        private static string _xuid;
+        private static bool _liststeamids;
+        private static string _steamid;
         private static int _round;
 
         private const int DEMO_SPEED_NORMAL = 1;
@@ -34,13 +35,13 @@ namespace csgo_overwatch_vdm
 
                     if (arg.StartsWith("-") || arg.StartsWith("/"))
                     {
-                        if (arg.Substring(1).ToLower().Equals("listxuids"))
+                        if (arg.Substring(1).ToLower().Equals("liststeamids"))
                         {
-                            _listxuids = true;
+                            _liststeamids = true;
                         }
-                        else if (arg.Substring(1).ToLower().Equals("xuid"))
+                        else if (arg.Substring(1).ToLower().Equals("steamid"))
                         {
-                            _xuid = args[++i]; // get the next argv (make the loop jump to the next arg)
+                            _steamid = args[++i]; // get the next argv (make the loop jump to the next arg)
                         }
                     }
                     else if (fileArgument == -1) // not set yet
@@ -52,23 +53,23 @@ namespace csgo_overwatch_vdm
 
             var fileName = args[fileArgument];
 
-            if (_listxuids)
+            if (_liststeamids)
             {
-                PrintXuidList(fileName);
+                PrintSteamIdList(fileName);
 
                 Console.ReadKey(); // TODO: remove
                 return;
             }
 
 
-            if (string.IsNullOrEmpty(_xuid))
+            if (string.IsNullOrEmpty(_steamid))
             {
-                Console.WriteLine("[ERROR] xuid parameter is empty !\n");
+                Console.WriteLine("[ERROR] steamid parameter is empty !\n");
                 PrintHelp();
                 Console.ReadKey(); // TODO: remove
                 return;
             }
-
+            
             using (var fileStream = File.OpenRead(fileName))
             {
                 Console.WriteLine("Parsing demo {0}", fileName);
@@ -83,7 +84,7 @@ namespace csgo_overwatch_vdm
                         var botName = "a bot"; // The lib does not send the Bot along with the event.
                         Console.WriteLine("{0} took over {1}.", e.Taker.Name, botName);
 
-                        if (_xuid.Equals(e.Taker.SteamID.ToString()))
+                        if (_steamid.Equals(e.Taker.SteamID.ToString()))
                         {
                             VdmGenerator.Add(new PlayCommandsAction
                             {
@@ -107,7 +108,7 @@ namespace csgo_overwatch_vdm
                             Console.WriteLine("[{0}] {1} killed himself.", tick, killerName);
                         }
 
-                        if (e?.Victim != null && _xuid.Equals(e.Victim.SteamID.ToString()))
+                        if (e?.Victim != null && _steamid.Equals(e.Victim.SteamID.ToString()))
                         {
                             VdmGenerator.Add(new PlayCommandsAction
                             {
@@ -156,11 +157,11 @@ namespace csgo_overwatch_vdm
             Console.ReadKey(); // TODO: remove
         }
 
-        private static void PrintXuidList(string fileName)
+        private static void PrintSteamIdList(string fileName)
         {
             using (var fileStream = File.OpenRead(fileName))
             {
-                Console.WriteLine("==== List of the xuids of the players ====");
+                Console.WriteLine("==== List of the steamids of the players ====");
                 using (var parser = new DemoParser(fileStream))
                 {
                     parser.ParseHeader();
@@ -177,8 +178,8 @@ namespace csgo_overwatch_vdm
         {
             Console.WriteLine("USAGE: csgo-overwatch-vdm filename.dem");
             Console.WriteLine("optional arguments:");
-            Console.WriteLine(" -xuid <xuid>    xuid of the player to generate the vdm for.");
-            Console.WriteLine(" -listxuids      list the xuid of the players in the match.");
+            Console.WriteLine(" -steamid <steamid>   SteamId of the player to generate the vdm for.");
+            Console.WriteLine(" -liststeamids        list the xuid of the players in the match.");
         }
     }
 }
