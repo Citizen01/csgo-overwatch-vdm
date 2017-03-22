@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using csgo_overwatch_vdm.vdm;
 using DemoInfo;
@@ -115,8 +116,16 @@ namespace csgo_overwatch_vdm
                             Console.WriteLine("[{0}] {1} killed himself.", tick, killerName);
                         }
 
-                        if (e?.Victim != null && _steamid.Equals(e.Victim.SteamID.ToString()))
+                        var victimSteamId = e?.Victim?.SteamID.ToString();
+                        if (victimSteamId == null) return; // Should not be possible (broken event if so)
+
+                        var theParser = (DemoParser) sender;
+                        var oponentTeam = GetOponentTeam(e.Killer);
+
+                        if (!theParser.PlayingParticipants.Any(p => p.Team == oponentTeam && p.IsAlive) // If it was the last oponent alive
+                            || victimSteamId.Equals(_steamid)) // or if it was our player
                         {
+                            // Fast forward
                             VdmGenerator.Add(new PlayCommandsAction
                             {
                                 StartTick = tick,
@@ -186,6 +195,12 @@ namespace csgo_overwatch_vdm
                     }
                 }
             }
+        }
+
+        private static Team GetOponentTeam(Player p)
+        {
+            return p != null && p.Team == Team.CounterTerrorist
+                ? Team.Terrorist : Team.CounterTerrorist;
         }
 
         private static void PrintHelp()
