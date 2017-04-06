@@ -26,7 +26,7 @@ namespace csgo_overwatch_vdm.vdm
                 file.Write("demoactions\n{"); // Header
                 for (var i = 0; i < _demoactions.Count; i++)
                 {
-                    file.Write(_demoactions[i].ToString(i)); // Content
+                    file.Write(_demoactions[i].ToString(i + 1)); // Content
                 }
                 file.Write("\n}"); // Footer
             }
