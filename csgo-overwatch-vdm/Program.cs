@@ -14,7 +14,7 @@ namespace csgo_overwatch_vdm
         private static int _round;
 
         private const int DEMO_SPEED_NORMAL = 1;
-        private const int DEMO_SPEED_FASTFORWARD = 4;
+        private const int DEMO_SPEED_FASTFORWARD = 10;
 
         private static void Main(string[] args)
         {
@@ -119,10 +119,8 @@ namespace csgo_overwatch_vdm
                         if (victimSteamId == null) return; // Should not be possible (broken event if so)
 
                         var theParser = (DemoParser) sender;
-                        var oponentTeam = GetOponentTeam(e.Killer);
 
-                        if (!theParser.PlayingParticipants.Any(p => p.Team == oponentTeam && p.IsAlive) // If it was the last oponent alive
-                            || victimSteamId.Equals(_steamid)) // or if it was our player
+                        if (victimSteamId.Equals(_steamid)) // if it was our The Suspect
                         {
                             // Fast forward
                             VdmGenerator.Add(new PlayCommandsAction
@@ -194,12 +192,6 @@ namespace csgo_overwatch_vdm
                     }
                 }
             }
-        }
-
-        private static Team GetOponentTeam(Player p)
-        {
-            return p != null && p.Team == Team.CounterTerrorist
-                ? Team.Terrorist : Team.CounterTerrorist;
         }
 
         private static void PrintHelp()
