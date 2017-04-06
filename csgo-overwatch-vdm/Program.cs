@@ -18,7 +18,6 @@ namespace csgo_overwatch_vdm
 
         private static void Main(string[] args)
         {
-            Console.SetOut(Console.Out);
             if (args.Length < 1)
             {
                 PrintHelp();
@@ -88,12 +87,12 @@ namespace csgo_overwatch_vdm
 
                     parser.BotTakeOver += (sender, e) =>
                     {
-                        var tick = ((DemoParser) sender).CurrentTick;
-                        var botName = "a bot"; // The lib does not send the Bot along with the event.
-                        Console.WriteLine("{0} took over {1}.", e.Taker.Name, botName);
-
                         if (_steamid.Equals(e.Taker.SteamID.ToString()))
                         {
+                            var tick = ((DemoParser)sender).IngameTick;
+                            var botName = "a bot"; // The lib does not send the Bot along with the event.
+                            Console.WriteLine("[{0}] {1} took over {2}.", tick, e.Taker.Name, botName);
+
                             VdmGenerator.Add(new PlayCommandsAction
                             {
                                 StartTick = tick,
@@ -104,7 +103,7 @@ namespace csgo_overwatch_vdm
 
                     parser.PlayerKilled += (sender, e) =>
                     {
-                        var tick = ((DemoParser) sender).CurrentTick;
+                        var tick = ((DemoParser) sender).IngameTick;
                         var killerName = e?.Killer?.Name ?? "[Someone]";
                         var victimName = e?.Victim?.Name;
                         if (victimName != null)
@@ -136,7 +135,7 @@ namespace csgo_overwatch_vdm
 
                     parser.RoundStart += (sender, e) =>
                     {
-                        var tick = ((DemoParser) sender).CurrentTick;
+                        var tick = ((DemoParser) sender).IngameTick;
                         _round++;
                         Console.WriteLine("[{0}] The round #{1} has started.", tick, _round);
 
@@ -149,7 +148,7 @@ namespace csgo_overwatch_vdm
 
                     parser.FreezetimeEnded += (sender, e) =>
                     {
-                        var tick = ((DemoParser) sender).CurrentTick;
+                        var tick = ((DemoParser) sender).IngameTick;
                         Console.WriteLine("[{0}] Freeztime ended", tick);
 
                         VdmGenerator.Add(new PlayCommandsAction
@@ -161,7 +160,7 @@ namespace csgo_overwatch_vdm
 
                     parser.RoundEnd += (sender, e) =>
                     {
-                        var tick = ((DemoParser) sender).CurrentTick;
+                        var tick = ((DemoParser) sender).IngameTick;
                         Console.WriteLine("[{0}] The round #{1} is over.", tick, _round);
                         VdmGenerator.Add(new PlayCommandsAction
                         {
