@@ -96,6 +96,7 @@ namespace csgo_overwatch_vdm
                             VdmGenerator.Add(new PlayCommandsAction
                             {
                                 StartTick = tick,
+                                Name = "Normal speed",
                                 Commands = "demo_timescale " + DEMO_SPEED_NORMAL
                             });
                         }
@@ -103,7 +104,9 @@ namespace csgo_overwatch_vdm
 
                     parser.PlayerKilled += (sender, e) =>
                     {
-                        var tick = ((DemoParser) sender).IngameTick;
+                        var theParser = (DemoParser) sender;
+                        var tick = theParser.IngameTick;
+
                         var killerName = e?.Killer?.Name ?? "[Someone]";
                         var victimName = e?.Victim?.Name;
                         if (victimName != null)
@@ -116,17 +119,26 @@ namespace csgo_overwatch_vdm
                         }
 
                         var victimSteamId = e?.Victim?.SteamID.ToString();
-                        if (victimSteamId == null) return; // Should not be possible (broken event if so)
-
-                        var theParser = (DemoParser) sender;
-
-                        if (victimSteamId.Equals(_steamid)) // if it was our The Suspect
+                        if (victimSteamId != null && victimSteamId.Equals(_steamid)) // if The Suspect died
                         {
                             // Fast forward
                             VdmGenerator.Add(new PlayCommandsAction
                             {
                                 StartTick = tick,
+                                Name = "Fast Forward",
                                 Commands = "demo_timescale " + DEMO_SPEED_FASTFORWARD
+                            });
+                        }
+
+                        var killerSteamId = e?.Killer?.SteamID.ToString();
+                        if (killerSteamId != null && killerSteamId.Equals(_steamid)) // if The Suspect killed someone
+                        {
+                            // Play "beep beep" :)
+                            VdmGenerator.Add(new PlayCommandsAction
+                            {
+                                StartTick = tick + 1,
+                                Name = "Beep Beep",
+                                Commands = "play ui/deathnotice"
                             });
                         }
                     };
@@ -140,6 +152,7 @@ namespace csgo_overwatch_vdm
                         VdmGenerator.Add(new PlayCommandsAction
                         {
                             StartTick = tick,
+                            Name = "Spec player",
                             Commands = "spec_player_by_accountid " + _steamid
                         });
                     };
@@ -152,6 +165,7 @@ namespace csgo_overwatch_vdm
                         VdmGenerator.Add(new PlayCommandsAction
                         {
                             StartTick = tick,
+                            Name = "Normal speed",
                             Commands = "demo_timescale " + DEMO_SPEED_NORMAL
                         });
                     };
@@ -163,6 +177,7 @@ namespace csgo_overwatch_vdm
                         VdmGenerator.Add(new PlayCommandsAction
                         {
                             StartTick = tick,
+                            Name = "Fast Forward",
                             Commands = "demo_timescale " + DEMO_SPEED_FASTFORWARD
                         });
                     };
